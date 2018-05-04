@@ -1,146 +1,191 @@
-<template >
-    <div>
-        <nav-header></nav-header>
-        <nav-bread>
-            <span>Goods</span>
-        </nav-bread>
-        <div class="accessory-result-page accessory-page">
-            <div class="container">
-                <div class="filter-nav">
-                    <span class="sortby">Sort by:</span>
-                    <a href="javascript:void(0)" class="default cur">Default</a>
-                    <a href="javascript:void(0)" class="price">Price
-                        <svg class="icon icon-arrow-short">
-                            <use xlink:href="#icon-arrow-short"></use>
-                        </svg>
-                    </a>
-                    <a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
-                </div>
-                <div class="accessory-result">
-                    <!-- filter -->
-                    <div class="filter stopPop" id="filter" :class="{'filterby-show': filterBy}">
-                        <dl class="filter-price">
-                            <dt>Price:</dt>
-                            <dd>
-                                <a href="javascript:void(0)" @click="priceChecked='all'" :class="{'cur': priceChecked=='all'}">All</a>
-                            </dd>
-                            <dd v-for="(price, index) in priceFilter" :key="index">
-                                <a href="javascript:void(0)" @click='priceChecked=index' :class="{'cur': priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
-                            </dd>
-                        </dl>
-                    </div>
+<template>
+	<div>
+		<nav-header></nav-header>
+		<nav-bread>
+			<span>Goods</span>
+		</nav-bread>
+		<div class="accessory-result-page accessory-page">
+			<div class="container">
+				<div class="filter-nav">
+					<span class="sortby">Sort by:</span>
+					<a href="javascript:void(0)" class="default cur">Default</a>
+					<a @click="sortGoods" href="javascript:void(0)" class="price">Price
+						<svg class="icon icon-arrow-short">
+							<use xlink:href="#icon-arrow-short"></use>
+						</svg>
+					</a>
+					<a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
+				</div>
+				<div class="accessory-result">
+					<!-- filter -->
+					<div class="filter stopPop" id="filter" :class="{'filterby-show': filterBy}">
+						<dl class="filter-price">
+							<dt>Price:</dt>
+							<dd>
+								<a href="javascript:void(0)" @click="setPriceFilter('all')" :class="{'cur': priceChecked=='all'}">All</a>
+							</dd>
+							<dd v-for="(price, index) in priceFilter" :key="index">
+								<a href="javascript:void(0)" @click='setPriceFilter(index)' :class="{'cur': priceChecked==index}">{{price.startPrice}} - {{price.endPrice}}</a>
+							</dd>
+						</dl>
+					</div>
 
-                    <!-- search result accessories list -->
-                    <div class="accessory-list-wrap">
-                        <div class="accessory-list col-4">
-                            <ul>
-                                <li>
-                                    <div class="pic">
-                                        <a href="#"><img v-lazy="'static/1.jpg'" alt=""></a>
-                                    </div>
-                                    <div class="main">
-                                        <div class="name">XX</div>
-                                        <div class="price">999</div>
-                                        <div class="btn-area">
-                                            <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="pic">
-                                        <a href="#"><img v-lazy="'static/2.jpg'" alt=""></a>
-                                    </div>
-                                    <div class="main">
-                                        <div class="name">XX</div>
-                                        <div class="price">1000</div>
-                                        <div class="btn-area">
-                                            <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="pic">
-                                        <a href="#"><img v-lazy="'static/3.jpg'" alt=""></a>
-                                    </div>
-                                    <div class="main">
-                                        <div class="name">XX</div>
-                                        <div class="price">500</div>
-                                        <div class="btn-area">
-                                            <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="pic">
-                                        <a href="#"><img v-lazy="'static/4.jpg'" alt=""></a>
-                                    </div>
-                                    <div class="main">
-                                        <div class="name">XX</div>
-                                        <div class="price">2499</div>
-                                        <div class="btn-area">
-                                            <a href="javascript:;" class="btn btn--m">加入购物车</a>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="md-overlay" @click="closePop" v-show="overlayFlag"></div>
-        <nav-footer></nav-footer>
-    </div>
+					<!-- search result accessories list -->
+					<div class="accessory-list-wrap">
+						<div class="accessory-list col-4">
+							<ul>
+								<li v-for="(item, index) in goodsList" :key="index">
+									<div class="pic">
+										<!--v-lazy="'static/1.jpg'"-->
+										<a href="#"><img v-lazy="'static/'+ item.productImg" alt=""></a>
+									</div>
+									<div class="main">
+										<div class="name">{{item.productName}}</div>
+										<div class="price">{{item.productPrice}}</div>
+										<div class="btn-area">
+											<a href="javascript:;" class="btn btn--m" @click="addCart(item.productId)">加入购物车</a>
+										</div>
+									</div>
+								</li>
+							</ul>
+							<div class="load-more" v-infinite-scroll="loadMore" infinite-scroll-disabled="busy" infinite-scroll-distance="30">
+								<img src="../../static/loading-svg/loading-spinning-bubbles.svg" v-show="loading" />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="md-overlay" @click="closePop" v-show="overlayFlag"></div>
+		<nav-footer></nav-footer>
+	</div>
 </template>
 
 <script>
-import './../assets/css/base.css'
-import './../assets/css/login.css'
-import './../assets/css/product.css'
-import NavHeader from './../components/NavHeader'
-import NavFooter from './../components/NavFooter'
-import NavBread from './../components/NavBread'
-export default {
-    name: "",
-    data(){
-        return{
-            priceFilter: [
-                {
-                    startPrice: '0.00',
-                    endPrice: '500.00'
-                },
-                {
-                    startPrice: '500.00',
-                    endPrice: '1000.00'
-                },
-                {
-                    startPrice: '1000.00',
-                    endPrice: '2000.00'
-                },
-            ],
-            priceChecked: 'all',
-            filterBy: false,
-            overlayFlag: false
-        }
-    },
-    methods:{
-        showFilterPop(){
-            this.filterBy = true;
-            this.overlayFlag = true;
-        },
-        closePop(){
-            this.filterBy = false;
-            this.overlayFlag = false;
-        }
-    },
-    components:{
-        NavHeader,
-        NavFooter,
-        NavBread
-    }
-}
+	import './../assets/css/base.css'
+	import './../assets/css/login.css'
+	import './../assets/css/product.css'
+	import NavHeader from './../components/NavHeader'
+	import NavFooter from './../components/NavFooter'
+	import NavBread from './../components/NavBread'
+	import axios from 'axios'
+	export default {
+		name: "",
+		data() {
+			return {
+				priceFilter: [{
+						startPrice: '0.00',
+						endPrice: '100.00'
+					},
+					{
+						startPrice: '100.00',
+						endPrice: '500.00'
+					},
+					{
+						startPrice: '500.00',
+						endPrice: '1000.00'
+					},
+					{
+						startPrice: '1000.00',
+						endPrice: '5000.00'
+					}
+				],
+				priceChecked: 'all',
+				filterBy: false,
+				overlayFlag: false,
+				goodsList: [],
+				sortFlag: true,
+				page: 1,
+				pageSize: 8,
+				busy: true,
+				loading: false
+			}
+		},
+		methods: {
+			showFilterPop() {
+				this.filterBy = true;
+				this.overlayFlag = true;
+			},
+			closePop() {
+				this.filterBy = false;
+				this.overlayFlag = false;
+			},
+			getGoodsList(flag) {
+				let param = {
+					page: this.page,
+					pageSize: this.pageSize,
+					sort: this.sortFlag ? 1 : -1,
+					priceLevel: this.priceChecked
+				}
+				this.loading = true;
+				axios.get('/goods', {
+					params: param
+				}).then((response) => {
+					this.loading = false;
+					let res = response.data;
+					if(res.status == '0') {
+						if(flag) {
+							this.goodsList = this.goodsList.concat(res.result.list);
+
+							if(res.result.count < this.pageSize) {
+								this.busy = true;
+							} else {
+								this.busy = false;
+							}
+						} else {
+							this.goodsList = res.result.list;
+							this.busy = false;
+						}
+
+					} else {
+						this.goodsList = [];
+					}
+					console.log(res)
+				})
+			},
+			setPriceFilter(index) {
+				this.priceChecked = index;
+				this.closePop();
+				this.page = 1;
+				this.getGoodsList()
+			},
+			sortGoods() {
+				this.sortFlag = !this.sortFlag;
+				this.page = 1;
+				this.getGoodsList();
+			},
+			loadMore() {
+				this.busy = true;
+				setTimeout(() => {
+					this.page++;
+					this.getGoodsList(true);
+				}, 500);
+			},
+			addCart(productId){
+				axios.post('/goods/addCart', {productId:productId}).then((res)=>{
+					if(res.status == '0'){
+						alert("添加成功")
+					}else{
+						alert("添加失败")
+					}
+				})
+			}
+		},
+		components: {
+			NavHeader,
+			NavFooter,
+			NavBread
+		},
+		mounted() {
+			this.getGoodsList();
+		}
+	}
 </script>
 
-<style scoped >
-
+<style scoped>
+	.load-more {
+		height: 100px;
+		line-height: 100px;
+		text-align: center;
+	}
 </style>
