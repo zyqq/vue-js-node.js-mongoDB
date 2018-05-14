@@ -82,7 +82,7 @@ router.get('/', function(req, res, next) {
 router.post('/addCart', (req, res, next) => {
 	let userId = '1',
 		productId = req.body.productId;
-	let User = require('../modules/user');
+	let User = require('../models/user');
 	User.findOne({
 		userId: userId
 	}, (err, userDoc) => {
@@ -91,6 +91,7 @@ router.post('/addCart', (req, res, next) => {
 				status: '1',
 				msg: err.message
 			})
+			console.log(err)
 		} else {
 			console.log("userDoc:" + userDoc);
 			if(userDoc) {
@@ -98,7 +99,7 @@ router.post('/addCart', (req, res, next) => {
 				userDoc.cartList.forEach((item) => {
 					if(item.productId == productId) {
 						goodsItem = item;
-						item.productNum++;
+						item.productNum+=1;
 					}
 				})
 				// 如果购物车中已存在添加的商品
@@ -121,7 +122,7 @@ router.post('/addCart', (req, res, next) => {
 					Goods.findOne({
 						productId: productId
 					}, (err1, doc) => {
-						if(err) {
+						if(err1) {
 							res.json({
 								status: '1',
 								msg: err1.message

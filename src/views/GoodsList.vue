@@ -163,7 +163,8 @@
 			},
 			addCart(productId){
 				axios.post('/goods/addCart', {productId:productId}).then((res)=>{
-					if(res.status == '0'){
+					console.log(res)
+					if(res.data.status == '0'){
 						alert("添加成功")
 					}else{
 						alert("添加失败")
