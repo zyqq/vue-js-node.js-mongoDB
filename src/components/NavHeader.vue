@@ -18,7 +18,7 @@
               <span class="navbar-link"></span>
               <span v-text="nickName" v-if='nickName'></span>
               <a href="javascript:void(0)" class="navbar-link" v-if='!nickName' @click="loginModalFlag = true">Login</a>
-              <a href="javascript:void(0)" class="navbar-link"  v-if='nickName'>Logout</a>
+              <a href="javascript:void(0)" class="navbar-link" @click="logOut" v-if='nickName'>Logout</a>
               <div class="navbar-cart-container">
                 <span class="navbar-cart-count"></span>
                 <a class="navbar-link navbar-cart-link" href="/#/cart">
@@ -50,7 +50,7 @@
         					</li>
         					<li class="regi_form_input noMargin">
         						<i class="icon IconPwd" style="float: left;"></i>
-        						<input type="password" tabindex="2" name="password" class="regi_login_input" v-model="userPwd" placeholder="Password" value="" />
+        						<input type="password" tabindex="2" name="password" class="regi_login_input" v-model="userPwd" placeholder="Password" value="" @keyup.enter="login" />
         					</li>
         				</ul>
         			</div>
@@ -78,7 +78,19 @@
 				loginModalFlag: false
 			}
 		},
+		mounted(){
+			this.checkLogin();
+		},
 		methods:{
+			
+			checkLogin(){
+				axios.get('/users/checkLogin').then((response)=>{
+					let res = response.data;
+					if(res.status == '0'){
+						this.nickName = res.result.userName;
+					}
+				})
+			},
 			login(){
 				if(!this.userName || !this.userPwd){
 					this.errorTip = true;
@@ -95,6 +107,14 @@
 						this.nickName = res.result.userName;
 					}else{
 						this.errorTip = true;
+					}
+				})
+			},
+			logOut(){
+				axios.post('users/logout').then((response)=>{
+					let res = response.data;
+					if(res.status == '0'){
+						this.nickName = '';
 					}
 				})
 			}

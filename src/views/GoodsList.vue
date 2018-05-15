@@ -9,9 +9,10 @@
 				<div class="filter-nav">
 					<span class="sortby">Sort by:</span>
 					<a href="javascript:void(0)" class="default cur">Default</a>
-					<a @click="sortGoods" href="javascript:void(0)" class="price">Price
-						<svg class="icon icon-arrow-short">
-							<use xlink:href="#icon-arrow-short"></use>
+					<a @click="sortGoods" href="javascript:void(0)" class="price">
+						Price
+						<svg class="icon icon-arrow-short" :class="{'sort-up': !sortFlag}">
+							<use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#icon-arrow-short"></use>
 						</svg>
 					</a>
 					<a href="javascript:void(0)" class="filterby stopPop" @click="showFilterPop">Filter by</a>
@@ -56,7 +57,26 @@
 				</div>
 			</div>
 		</div>
-		<div class="md-overlay" @click="closePop" v-show="overlayFlag"></div>
+		<modal :mdShow='mdShow' @close="closeModal">
+			<p slot="message">
+				请先登录，否则无法加入到购物车中
+			</p>
+			<div slot="btnGroup">
+				<a class="btn btn--m" href="javascript:;" @click="closeModal">关闭</a>
+			</div>
+		</modal>
+		<modal :mdShow='mdShowCart' @close="closeModal">
+			<p slot="message">
+				<svg class="icon-status-ok">
+                    <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="#iicon-status-ok"></use>
+                  </svg>
+                  <span>加入购物车成功！</span>
+			</p>
+			<div slot="btnGroup">
+				<a class="btn btn--m" href="javascript:;" @click="closeModal">继续购物</a>
+				<router-link class="btn btn--m" href="javascript:;" to="/cart">查看购物车</router-link>
+			</div>
+		</modal>
 		<nav-footer></nav-footer>
 	</div>
 </template>
@@ -68,6 +88,7 @@
 	import NavHeader from './../components/NavHeader'
 	import NavFooter from './../components/NavFooter'
 	import NavBread from './../components/NavBread'
+	import Modal from './../components/Modal'
 	import axios from 'axios'
 	export default {
 		name: "",
@@ -95,6 +116,8 @@
 				overlayFlag: false,
 				goodsList: [],
 				sortFlag: true,
+				mdShow:false,
+				mdShowCart:false,
 				page: 1,
 				pageSize: 8,
 				busy: true,
@@ -118,7 +141,7 @@
 					priceLevel: this.priceChecked
 				}
 				this.loading = true;
-				axios.get('/goods', {
+				axios.get('/goods/list', {
 					params: param
 				}).then((response) => {
 					this.loading = false;
@@ -165,17 +188,22 @@
 				axios.post('/goods/addCart', {productId:productId}).then((res)=>{
 					console.log(res)
 					if(res.data.status == '0'){
-						alert("添加成功")
+						this.mdShowCart = true;
 					}else{
-						alert("添加失败")
+						this.mdShow = true;
 					}
 				})
+			},
+			closeModal(){
+				this.mdShow = false;
+				this.mdShowCart = false;
 			}
 		},
 		components: {
 			NavHeader,
 			NavFooter,
-			NavBread
+			NavBread,
+			Modal
 		},
 		mounted() {
 			this.getGoodsList();
@@ -188,5 +216,9 @@
 		height: 100px;
 		line-height: 100px;
 		text-align: center;
+	}
+	.sort-up{
+		transform: rotate(180deg);
+		transition: all .3s ease-out;
 	}
 </style>

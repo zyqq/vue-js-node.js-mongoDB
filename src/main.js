@@ -5,16 +5,16 @@ import App from './App'
 import router from './router'
 import VueLazyLoad from 'vue-lazyload'
 import VueInfiniteScroll from 'vue-infinite-scroll'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import {currency} from './util/currency'
 
 Vue.config.productionTip = false
-
-Vue.use(ElementUI)
 
 Vue.use(VueLazyLoad, {
   loading: '/static/loading-svg/loading-bas.svg'
 })
+
+//全局过滤器，格式化价格
+Vue.filter('currency', currency);
 
 Vue.use(VueInfiniteScroll)
 /* eslint-disable no-new */
