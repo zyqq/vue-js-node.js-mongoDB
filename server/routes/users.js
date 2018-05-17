@@ -163,6 +163,34 @@ router.post('/cartEdit', (req, res, next) => {
 	})
 })
 
+// 获取购物车数量
+router.get('/getCartCount', (req, res, next)=>{
+	if(req.cookies && req.cookies.userId){
+		let userId = req.cookies.userId;
+		User.findOne({userId}, (err, doc)=>{
+			if(err) {
+				res.json({
+					status: '1',
+					msg: err.message,
+					result: ''
+				})
+	
+			} else {
+				let cartList = doc.cartList;
+				let cartCount = 0;
+				cartList.map((item)=>{
+					cartCount += parseInt(item.productNum);
+				});
+				res.json({
+					status: '0',
+					msg: '',
+					result: cartCount
+				})
+			}
+		})
+	}
+})
+
 // 全选商品
 router.post('/editCheckAll', (req, res, next) => {
 	var userId = req.cookies.userId,

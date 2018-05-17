@@ -49,7 +49,7 @@
 							</ul>
 						</div>
 						<ul class="cart-item-list">
-							<li v-for="item in cartList">
+							<li v-for="item in cartList" :key="item.id">
 								<div class="cart-tab-1">
 									<div class="cart-item-check">
 										<a href="javascipt:;" class="checkbox-btn item-check-btn" :class="{'checked': item.checked=='1'}" @click="editCart('checked', item)">
@@ -84,7 +84,7 @@
 								</div>
 								<div class="cart-tab-5">
 									<div class="cart-item-opration">
-										<a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId)">
+										<a href="javascript:;" class="item-edit-btn" @click="delCartConfirm(item.productId, item.productNum)">
 											<svg class="icon icon-del">
 												<use xlink:href="#icon-del"></use>
 											</svg>
@@ -172,7 +172,8 @@
 			return {
 				cartList: [],
 				modalConfirm: false,
-				productId: ''
+				productId: '',
+				productNum: 0
 			}
 		},
 		components: {
@@ -214,8 +215,9 @@
 					}
 				})
 			},
-			delCartConfirm(productId) {
+			delCartConfirm(productId, productNum) {
 				this.productId = productId;
+				this.productNum = productNum;
 				this.modalConfirm = true;
 			},
 			closeModal() {
@@ -229,6 +231,7 @@
 					if(res.status == '0') {
 						this.modalConfirm = false;
 						this.init();
+						this.$store.commit('updateCartCount', -this.productNum);
 					}
 				})
 			},
@@ -249,6 +252,15 @@
 					checked: item.checked,
 				}).then((response) => {
 					let res = response.data;
+					if(res.status == '0'){
+						let num = 0;
+						if(flag == 'add'){
+							num = 1;
+						}else if(flag == 'minu'){
+							num = -1;
+						}
+						this.$store.commit("updateCartCount", num);
+					}
 				})
 			},
 			toggleCheckAll(){
