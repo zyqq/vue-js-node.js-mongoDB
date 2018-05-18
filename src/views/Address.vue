@@ -60,7 +60,7 @@
 					<div class="addr-list-wrap">
 						<div class="addr-list">
 							<ul>
-								<li :key="item" v-for="(item,index) in addressListFilter" :class="{'check': checkIndex==index}" @click="checkIndex = index;selectAddrId = item.addressId">
+								<li :key="item.addressId" v-for="(item,index) in addressListFilter" :class="{'check': checkIndex==index}" @click="checkIndex = index;selectAddrId = item.addressId">
 									<dl>
 										<dt>{{item.userName}}</dt>
 										<dd class="address">{{item.streetName}}</dd>
@@ -172,6 +172,16 @@
 					let res = response.data;
 					if(res.status == '0') {
 						this.addressList = res.result;
+						if(this.addressList.length!=0){
+							this.addressList.forEach((item)=>{
+								console.log(item.isDefault);
+								if(item.isDefault == true){
+									this.selectAddrId = item.addressId;
+								}
+							})
+						}else{
+							alert('请添加收货地址');
+						}
 					}
 				})
 			},

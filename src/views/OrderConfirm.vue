@@ -55,7 +55,7 @@
 							</ul>
 						</div>
 						<ul class="cart-item-list">
-							<li v-for="item in cartList" v-if="item.checked=='1'" :key="item">
+							<li v-for="item in cartList" v-if="item.checked=='1'" :key="item.productId">
 								<div class="cart-tab-1">
 									<div class="cart-item-pic">
 										<img :src="'/static/'+ item.productImg" :alt="item.productName">

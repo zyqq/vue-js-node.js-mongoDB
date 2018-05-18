@@ -31,6 +31,12 @@ export default new Router({
 			path: '/orderSuccess',
 			name: 'OrderSuccess',
 			component: OrderSuccess
+		},
+
+		{
+			path: '/orderConfirm',
+			name: 'OrderConfirm',
+			component: OrderConfirm
 		}
 	]
 })
