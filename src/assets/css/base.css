@@ -1287,20 +1287,23 @@ html {
     display: flex;
     margin-top: 0;
   }
-
+  .md-modal .btn-wrap div{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
+  }
   .md-modal .btn-wrap .btn {
     -webkit-box-flex: 1;
-    -webkit-flex: 1;
     -ms-flex: 1;
-    flex: 1;
-    width: 100%;
-    margin: 0;
+    /* flex: 1; */
+    width: 100px;
+    margin-bottom: 20px;
     font-size: 12px;
   }
 
   .md-modal .btn-wrap .btn:first-child {
-    border-left: none;
-    border-right: none;
+    /* border-left: none;
+    border-right: none; */
   }
 
   .md-modal.modal-normal .content-tit {
