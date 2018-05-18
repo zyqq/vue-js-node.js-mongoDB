@@ -1256,7 +1256,7 @@ html {
   }
 
   .md-modal .confirm-tips, .md-modal .alert-tips {
-    padding: 30px 10px;
+    padding: 50px 10px 0;
   }
 
   .md-modal .confirm-tips {
@@ -1264,6 +1264,7 @@ html {
     display: -webkit-flex;
     display: -ms-flexbox;
     display: flex;
+    flex-direction: column;
     min-height: 90px;
     -ms-flex-align: center;
     -webkit-box-align: center;
