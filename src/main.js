@@ -12,7 +12,7 @@ import { stat } from 'fs';
 Vue.config.productionTip = false
 
 Vue.use(VueLazyLoad, {
-  loading: '/static/loading-svg/loading-bas.svg'
+  loading: 'static/loading-svg/loading-bars.svg'
 })
 Vue.use(VueInfiniteScroll)
 Vue.use(Vuex)
