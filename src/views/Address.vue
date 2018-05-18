@@ -132,6 +132,14 @@
 				<a href="javascript:;" class="btn btn--m" @click="closeModal">取消</a>
 			</div>
 		</modal>
+		<modal :mdShow="isMdShow2" @close="closeModal">
+			<p slot='message'>
+				仅剩最后一条数据，无法删除
+			</p>
+			<div slot='btnGroup'>
+				<a href="javascript:;" class="btn btn--m" @click="closeModal">好的</a>
+			</div>
+		</modal>
 		<nav-footer></nav-footer>
 	</div>
 </template>
@@ -152,7 +160,8 @@
 				isMdShow: false,
 				addressId: '',
 				selectAddrId:'',
-				addressList: []
+				addressList: [],
+				isMdShow2: false
 			}
 		},
 		computed:{
@@ -205,10 +214,15 @@
 			},
 			closeModal(){
 				this.isMdShow = false;
+				this.isMdShow2 = false;
 			},
 			delAddressConfirm(addressId){
-				this.addressId = addressId;
-				this.isMdShow = true;
+				if(this.addressList.length > 1){
+					this.addressId = addressId;
+					this.isMdShow = true;
+				}else{
+					this.isMdShow2 = true;
+				}
 			},
 			delAddress(){
 				axios.post('/users/delAddress', {
